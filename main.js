@@ -3,38 +3,22 @@
 const canvas = document.getElementById('canvas');
 const c = canvas.getContext('2d');
 
-// universal dims of canvas
+// dims of canvas
 
-import { uWidth } from "./responsive.js";
-import { uHeight } from "./responsive.js";
-canvas.width = uWidth;
-canvas.height = uHeight;
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
-// MOBILE
-
-// function is_touch_enabled() {
-//     return ( 'ontouchstart' in window ) ||
-//            ( navigator.maxTouchPoints > 0 ) ||
-//            ( navigator.msMaxTouchPoints > 0 );
-// }
-
-// if (is_touch_enabled()) {
-//     canvas.width = 500;
-//     canvas.height = 300;
-// }
-
-
-
-
-// enforce gameplay
+// refresh window if user leaves tab
 
 window.addEventListener('blur', function (event) {
     location.reload();
 });
 
+// refresh on viewport change
 
-
-
+window.onresize = function(event){
+    document.location.reload(true);
+}
 
 // imports
 
@@ -48,16 +32,12 @@ import { spawner } from "./biox.js";
 import { killer } from "./dataScientist.js";
 import { bulletUpdate } from "./dataScientist.js";
 
-
-
-
-
 // animation loop
 
 function animate() {
 
     requestAnimationFrame(animate);
-    c.clearRect(0,0, uWidth, uHeight);
+    c.clearRect(0,0, window.innerWidth, window.innerHeight);
 
     spawner();
 
@@ -74,11 +54,6 @@ function animate() {
 
     killer();
 
-
-
-
-
-
 };
 
 animate();
@@ -87,17 +62,5 @@ animate();
 
 // tasks:
 
-// 1. make game responsive, dynamic to each screensize and mobile friendly
-
-//    base player and enemy positions based on width and height
-//    overcompensate the art in order to accomidate all viewport aspect ratios (official aspect ratio is 1.28)
-//    base the background art layers off the posisiton of the player but maintain the art aspect ratio to one ratio
-//    the speed of x of all participants including the background must be dependant on width
-//    the speed of y of all participants must be dependant on height
-
-// center the canvas
-
-
-
-// 2 start adding in art and animating it
-
+// 1. start adding in art/animation/replacing
+// 2. sounds & music?

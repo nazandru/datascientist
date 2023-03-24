@@ -1,60 +1,66 @@
+
 // paintbrush
 
 const c = canvas.getContext('2d');
 
-// defining stuff
+// defining stuff & imports
+
+import { classGameOver } from "./responsive.js";
 
 import { bioxArray } from "./biox.js";
-import { uWidth } from "./responsive.js";
-import { uHeight } from "./responsive.js";
-canvas.width = uWidth;
-canvas.height = uHeight;
+import { otherDaddy } from "./responsive.js";
+import { flipPhone } from "./responsive.js";
+import { widenScreen } from "./responsive.js";
 
-const gravity = uHeight / 600;
-let isJumping = false;
-let color = 'red';
-let isKicking = false; 
-let isShooting = false;
-let isCooling = false;
+import { color } from "./responsive.js";
 
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const gravity = window.innerHeight / 600;
+export let isJumping = false;
+color.color = 'red';
+export let isKicking = false; 
+export let isShooting = false;
+export let isCooling = false;
 
 
 // key controls!
 
 window.addEventListener('keydown', ({keyCode}) => {
-    if (isJumping) return; 
+    if (isJumping || !classGameOver.playing) return; 
     switch (keyCode) {
         case 87:
             //jump
-            player.velocity.y -= uHeight / 30;
+            player.velocity.y -= window.innerHeight / 30;
             break
     }
 
 });
 
 window.addEventListener('keydown', ({keyCode}) => {
-    if (isShooting || isKicking) return; 
+    if (isShooting || isKicking  || !classGameOver.playing) return; 
     switch (keyCode) {
         case 65:
             //shooter
             setTimeout(()=>{
                 let bullet = new Bullet();
                 bulletArray.push(bullet);
-            }, 600)
-            color = 'orange';
-            setTimeout(() => {color = 'red'}, 1200)
+            }, 200)
+            color.color = 'orange';
+            setTimeout(() => {color.color = 'red'}, 1200)
             break
 }
 });
 
 window.addEventListener('keydown', ({keyCode}) => {
-    if (isKicking || isShooting || isCooling) return;
+    if (isKicking || isShooting || isCooling  || !classGameOver.playing) return;
     switch (keyCode) {
         case 68:
         //kicker
-        color = 'grey';
+        color.color = 'grey';
         setTimeout(() => {
-            color = 'red';
+            color.color = 'red';
             isCooling = true;
             setTimeout(()=>{
                 isCooling = false;
@@ -64,6 +70,91 @@ window.addEventListener('keydown', ({keyCode}) => {
     }
 });
 
+// MOBILE CHECK and MOBILE CONTROL
+
+let InstDaddy = document.getElementById('instructionsDaddy');
+let instP = document.getElementById('instructionsP');
+let instK = document.getElementById('instructionsK');
+
+if (!is_touch_enabled()) {
+    InstDaddy.removeChild(instP);
+}
+
+function is_touch_enabled() {
+    return ( 'ontouchstart' in window ) ||
+           ( navigator.maxTouchPoints > 0 ) ||
+           ( navigator.msMaxTouchPoints > 0 );
+}
+
+if (is_touch_enabled() && window.innerWidth < window.innerHeight) {
+    otherDaddy.appendChild(flipPhone);
+};
+
+if (window.innerWidth < window.innerHeight && !is_touch_enabled()) {
+    otherDaddy.appendChild(widenScreen);
+};
+
+if (is_touch_enabled()) {
+
+    InstDaddy.removeChild(instK);
+
+    let kick = document.getElementById('kick');
+    kick.style.width = window.innerWidth / 20 + "px";
+    kick.style.height = window.innerWidth / 20 + "px";
+    kick.style.left = window.innerWidth / 12 + "px";
+    kick.style.top = window.innerHeight / 1.4 + "px";
+
+    kick.onclick = () => {
+        if (isKicking || isShooting || isCooling || !classGameOver.playing) return;
+        color.color = 'grey';
+        setTimeout(() => {
+            color.color = 'red';
+            isCooling = true;
+            setTimeout(()=>{
+                isCooling = false;
+            }, 500);
+        }, 500)
+    }
+
+    let shoot = document.getElementById('shoot');
+    shoot.style.width = window.innerWidth / 20 + "px";
+    shoot.style.height = window.innerWidth / 20 + "px";
+    shoot.style.left = window.innerWidth / 12 + "px";
+    shoot.style.top = window.innerHeight / 1.9 + "px";
+
+    shoot.onclick = () => {
+        if (isShooting || isKicking  || !classGameOver.playing) return; 
+        setTimeout(()=>{
+            let bullet = new Bullet();
+            bulletArray.push(bullet);
+        }, 200)
+        color.color = 'orange';
+        setTimeout(() => {color.color = 'red'}, 1200)
+    }
+
+    let jumpButton = document.getElementById('jumpButton');
+    jumpButton.style.width = window.innerWidth / 20 + "px";
+    jumpButton.style.height = window.innerWidth / 20 + "px";
+    jumpButton.style.left = window.innerWidth / 1.15 + "px";
+    jumpButton.style.top = window.innerHeight / 1.4 + "px";
+
+    jumpButton.onclick = () => {
+        if (isJumping || !classGameOver.playing) return; 
+        player.velocity.y -= window.innerHeight / 30;
+    }
+    
+} else {
+    let k = document.getElementById('k')
+    let s = document.getElementById('s')
+    let j = document.getElementById('j')
+    shoot.style.width = 0 + "px";
+    kick.style.width = 0 + "px";
+    jumpButton.style.width = 0 + "px";
+    kick.removeChild(k);
+    shoot.removeChild(s);
+    jumpButton.removeChild(j);
+}
+
 
 
 
@@ -71,22 +162,25 @@ window.addEventListener('keydown', ({keyCode}) => {
 
 class Player {
     constructor() {
-        console.log(window.innerHeight)
         this.position = {            
-            x: uWidth / 5,
-            y: uHeight / 1.30
+            x: window.innerWidth / 5,
+            y: window.innerHeight / 1.30
         }
         this.velocity = {
             x: 0,
             y: 0
         }
-        this.width = uWidth / 20;
-        this.height = uWidth / 20;
-        // we have based the player dims on width and position on both width and height
+        this.width = window.innerWidth / 20;
+        this.height = window.innerWidth / 20;
+
+        if (window.innerWidth / window.innerHeight > 1.8) {
+            this.width = window.innerHeight / 10;
+            this.height = window.innerHeight / 10;
+        }
     }
 
     draw() {
-        c.fillStyle = color;
+        c.fillStyle = color.color;
         c.fillRect(this.position.x, this.position.y, this.width, this.height)
     }
 
@@ -98,11 +192,17 @@ class Player {
         this.position.x += this.velocity.x;
 
         // adding gravity 
-        if(this.position.y < uHeight / 1.30) {
+        if(this.position.y < window.innerHeight / 1.30) {
             this.velocity.y += gravity;
 
         } else {
             this.velocity.y = 0;
+        }
+        if (classGameOver.gameover) {
+            this.velocity.y = 0;
+        }
+        if (this.position.y > window.innerHeight / 1.30) {
+            this.position.y = window.innerHeight / 1.30;
         }
     }
 }
@@ -120,9 +220,9 @@ export const player = new Player();
 
 class Bullet {
     constructor() {
-    this.positionX = player.position.x + uWidth / 40;
-    this.positionY = player.position.y + uHeight / 24;
-    this.bulletVelocity = 11;
+    this.positionX = player.position.x + (player.width / 2);
+    this.positionY = player.position.y + (player.height / 2);
+    this.bulletVelocity = window.innerWidth / 70;
     }
 
     draw() {
@@ -146,7 +246,7 @@ let bulletArray = [];
 
 export let jumpLimiter = () => {
 
-    if (player.position.y < uHeight / 1.30) {
+    if (player.position.y < window.innerHeight / 1.30) {
     isJumping = true;
     } else {
         isJumping = false;
@@ -158,7 +258,7 @@ export let jumpLimiter = () => {
 
 export let kickLimiter = () => {
 
-    if (color === 'grey') {
+    if (color.color === 'grey') {
         isKicking = true;
     } else {
         isKicking = false;
@@ -170,7 +270,7 @@ export let kickLimiter = () => {
 
 export let shootLimiter = () => {
 
-    if (color === 'orange') {
+    if (color.color === 'orange') {
         isShooting = true;
     } else {
         isShooting = false;
@@ -185,52 +285,80 @@ export let shootLimiter = () => {
 
 export function killer() {
 
+    if (classGameOver.gameover) {
+        color.color = 'black';
+    }
+
     for (let i =0; i < bioxArray.length; i++) {
 
-    if (isKicking && bioxArray[i].spawnPointX - player.position.x < 25 && bioxArray[i].spawnPointX - player.position.x > -25 && 
-        bioxArray[i].spawnPointY - player.position.y < 25 && bioxArray[i].spawnPointY - player.position.y > -25 && bioxArray[i].color != 'blue') {
+    if (isKicking && bioxArray[i].spawnPointX - player.position.x < player.width && bioxArray[i].spawnPointX - player.position.x > -player.width && 
+        bioxArray[i].spawnPointY - player.position.y < player.height && bioxArray[i].spawnPointY - player.position.y > -player.height && bioxArray[i].color != 'blue') {
         bioxArray[i].color = 'black';
     }
-    if (bioxArray[i].spawnPointX - player.position.x < 25 && bioxArray[i].spawnPointX - player.position.x > -25 && 
-        bioxArray[i].spawnPointY - player.position.y < 25 && bioxArray[i].spawnPointY - player.position.y > -25 && bioxArray[i].color != 'black') {
-        location.reload();
+    if (bioxArray[i].spawnPointX - player.position.x < player.width && bioxArray[i].spawnPointX - player.position.x > -player.width && 
+        bioxArray[i].spawnPointY - player.position.y < player.height && bioxArray[i].spawnPointY - player.position.y > -player.height && bioxArray[i].color != 'black') {
+        classGameOver.gameover = true;
+        
     }
-    if (bioxArray[i].spawnPointX - player.position.x < 25 && bioxArray[i].spawnPointX - player.position.x > -40 && 
-        bioxArray[i].spawnPointY - player.position.y < 25 && bioxArray[i].spawnPointY - player.position.y > -25 && bioxArray[i].color != 'black' && bioxArray[i].color === 'blue') {
-        location.reload();
+    if (bioxArray[i].spawnPointX - player.position.x < player.width && bioxArray[i].spawnPointX - player.position.x > -bioxArray[i].width && 
+        bioxArray[i].spawnPointY - player.position.y < player.height && bioxArray[i].spawnPointY - player.position.y > -bioxArray[i].height && bioxArray[i].color != 'black' && bioxArray[i].color === 'blue') {
+        classGameOver.gameover = true;
     }
 
     };
 
 };
 
+// aspect ratio checker in order to update bullet stop at enemy
 
+let magicNumber = 0;
 
+if (window.innerWidth / window.innerHeight > 2 && window.innerWidth / window.innerHeight < 2.6) {
+    magicNumber -= 14
+} if (window.innerWidth / window.innerHeight > 2.6) {
+    magicNumber -= 19
+} if (window.innerWidth / window.innerHeight < 2) {
+    magicNumber -= 11;
+} if (window.innerWidth < 1000) {
+    magicNumber += 8;
+} if (window.innerWidth / window.innerHeight < 2 && window.innerWidth < 1000) {
+    magicNumber -= 4;
+}
 
 // shooting functionality
 
 export function bulletUpdate() {
+
+    if (classGameOver.gameover) {
+        bulletArray = [];
+    } 
 
     for (let i = 0; i < bulletArray.length; i++) {
         bulletArray[i].draw();
 
         for (let z = 0; z < bioxArray.length; z++) {
 
-            if (bioxArray[z].spawnPointX - bulletArray[i].positionX < 15 && bioxArray[z].spawnPointX - bulletArray[i].positionX > 0 && 
-            bioxArray[z].spawnPointY - bulletArray[i].positionY < 0 && bioxArray[z].spawnPointY - bulletArray[i].positionY > -27 && bioxArray[z].color != 'black' && bioxArray[z].color != 'blue') {
-            bioxArray[z].color = 'black';
-            bulletArray[i].bulletVelocity = -3;
+            if (bioxArray[z].spawnPointX - bulletArray[i].positionX < bioxArray[z].width / 5 && bioxArray[z].spawnPointX - bulletArray[i].positionX > -(bioxArray[z].width) && 
+            bioxArray[z].spawnPointY - bulletArray[i].positionY < 0 && bioxArray[z].spawnPointY - bulletArray[i].positionY > -bioxArray[z].width && bioxArray[z].color != 'black' && bioxArray[z].color != 'blue') {
+                
+                bioxArray[z].color = 'black';
+
+                bulletArray[i].bulletVelocity = magicNumber;
 
             }
-            if (bioxArray[z].spawnPointX - bulletArray[i].positionX < 15 && bioxArray[z].spawnPointX - bulletArray[i].positionX > 0 && 
-                bioxArray[z].spawnPointY - bulletArray[i].positionY < 0 && bioxArray[z].spawnPointY - bulletArray[i].positionY > -40 && bioxArray[z].color != 'black' && bioxArray[z].color === 'blue') {
+
+            if (bioxArray[z].spawnPointX - bulletArray[i].positionX < bioxArray[z].width / 7 && bioxArray[z].spawnPointX - bulletArray[i].positionX > -(bioxArray[z].width / 2) && 
+                bioxArray[z].spawnPointY - bulletArray[i].positionY < 0 && bioxArray[z].spawnPointY - bulletArray[i].positionY > -bioxArray[z].width && bioxArray[z].color != 'black' && bioxArray[z].color === 'blue') {
+                
                 bioxArray[z].color = 'black';
-                bulletArray[i].bulletVelocity = -3;
+                
+                bulletArray[i].bulletVelocity = magicNumber;
+
 
             }
         }
 
-        if (bulletArray[i].positionX < -2000 || bulletArray[i].positionX > 2000) {
+        if (bulletArray[i].positionX < -2000 || bulletArray[i].positionX > 6000) {
             bulletArray.shift();
         }
     }

@@ -10,10 +10,142 @@ body {
 }
 
 #canvas {
+    z-index: 1;
     position: absolute;
     top: 50%;
     left: 50%;
     margin-right: -50%;
     transform: translate(-50%, -50%);
     border: 3px solid purple;
+    background-color: rgb(43, 43, 43);
+}
+
+/* mobile controls */
+
+#kick {
+    z-index: 2;
+    position: absolute;
+    background-color: rgba(0, 255, 255, 0.315);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#shoot {
+    z-index: 3;
+    position: absolute;
+    background-color: rgba(0, 255, 255, 0.315);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#jumpButton {
+    z-index: 4;
+    position: absolute;
+    background-color: rgba(0, 255, 255, 0.315);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* menu */
+
+#menu {
+    z-index: 5;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    border: 3px solid rgb(0, 30, 128);
+    background-color: rgb(0, 30, 128);
+
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    padding: 5%;
+}
+
+#instructionsP {
+    width: 17vw;
+    display: flex;
+    justify-content: center;
+    margin-right: 8%;
+    font-size: 1vw;
+}
+
+#instructionsK {
+    width: 17vw;
+    display: flex;
+    justify-content: center;
+    margin-right: 8%;
+    font-size: 1vw;
+}
+
+#playBtn {
+    width: 8vw;
+    height: 5vw;
+    background-color: rgb(86, 13, 155);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#theplay {
+    clip-path: polygon(100% 50%, 0 0, 0 100%);
+    background-color: aliceblue;
+    width: 3vw;
+    height: 3vw;
+}
+
+#scores {
+    width: 17vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 8%;
+}
+
+#scores h1 {
+    font-size: 1.8vw;
+}
+
+#replay {
+    clip-path: polygon(100% 49%, 97% 33%, 87% 20%, 67% 15%, 49% 15%, 36% 19%, 30% 28%, 26% 38%, 25% 48%, 24% 61%, 29% 73%, 39% 82%, 57% 89%, 76% 90%, 88% 83%, 89% 71%, 76% 69%, 61% 73%, 49% 64%, 47% 54%, 49% 46%, 57% 34%, 66% 30%, 78% 34%, 78% 42%, 74% 46%, 86% 58%);
+    background-color: rgb(42, 125, 198);
+    width: 3vw;
+    height: 3vw;
+}
+
+/* lanscape enforcer */
+
+#flipPhone {
+    width: 90vw;
+    height: 90vh;
+    z-index: 7;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    background-color: blueviolet;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#widenScreen {
+    width: 90vw;
+    height: 90vh;
+    z-index: 7;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    background-color: rgb(43, 95, 226);
+    display: flex;
+    justify-content: center;
+    align-items: center;   
 }
